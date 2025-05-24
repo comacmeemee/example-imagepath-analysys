@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>画像分析フォーム</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f5f7fa;
+            padding: 40px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            background: #ffffff;
+            padding: 30px 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            font-size: 1.5em;
+            text-align: center;
+            color: #333;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            font-size: 1em;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-sizing: border-box;
+            margin-bottom: 10px;
+        }
+
+        input[type="text"]:focus {
+            border-color: #0066cc;
+            outline: none;
+        }
+
+        .error {
+            color: #d9534f;
+            font-size: 0.9em;
+            margin-bottom: 10px;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            font-size: 1em;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .result {
+            margin-top: 20px;
+            padding: 12px;
+            background-color: #e0f7e9;
+            color: #2c7a4b;
+            border: 1px solid #c3e6cb;
+            border-radius: 8px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>画像パスを入力してください</h1>
+
+    <form th:action="@{/analysis/submit}" th:object="${analysisForm}" method="post">
+        <input type="text"
+               th:field="*{path}"
+               placeholder="入力してください"
+               onfocus="this.placeholder=''"
+               onblur="if (this.value === '') this.placeholder='入力してください'">
+
+        <div th:if="${#fields.hasErrors('path')}" th:errors="*{path}" class="error"></div>
+
+        <button type="submit">送信</button>
+    </form>
+
+    <div th:if="${result}">
+        <div th:if="${result.success}">
+            <p class="result">
+                解析に成功しました。<br>
+                class: <span th:text="${result.clazz}"></span><br>
+                confidence: <span th:text="${result.confidence}"></span>
+            </p>
+        </div>
+
+        <div th:unless="${result.success}">
+            <p class="result">
+                解析に失敗しました。<br>
+                message: <span th:text="${result.message}"></span>
+            </p>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>
